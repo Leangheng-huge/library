@@ -33,7 +33,7 @@ private:
     const string SAVE_FILE = "library_data.json";
 
     void printHeader() {
-        cout << CYAN << BOLD;
+        cout << PINK << BOLD;
         cout << "\n========================================\n";
         cout << "       LIBRARY MANAGEMENT SYSTEM        \n";
         cout << "========================================\n";
@@ -66,6 +66,13 @@ private:
             }
         }
         return unescaped;
+    }
+
+    void reindexBooks() {
+        for (int i = 0; i < books.size(); i++) {
+            books[i].id = i + 1;
+        }
+        nextId = books.size() + 1;
     }
 
 public:
@@ -180,22 +187,68 @@ public:
         printHeader();
         cout << RED << "\n╰(*°▽°*)╯ Delete Book\n" << RESET;
 
-        int bookId;
-        cout << CYAN << "Enter Book ID: " << RESET;
-        cin >> bookId;
+        cout << YELLOW << "Delete Options:\n";
+        cout << "1. Delete by ID\n";
+        cout << "2. Delete All Books\n";
+        cout << CYAN << "Enter choice: " << RESET;
+
+        int deleteChoice;
+        cin >> deleteChoice;
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-        for (int i = 0; i < books.size(); i++) {
-            if (books[i].id == bookId) {
-                books.erase(books.begin() + i);
-                cout << GREEN << "Book deleted successfully.\n" << RESET;
+        if (deleteChoice == 1) {
+            // Delete by ID
+            int bookId;
+            cout << CYAN << "Enter Book ID to delete: " << RESET;
+            cin >> bookId;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
+            bool found = false;
+            for (int i = 0; i < books.size(); i++) {
+                if (books[i].id == bookId) {
+                    cout << YELLOW << "Deleting book: " << books[i].title << RESET << endl;
+                    books.erase(books.begin() + i);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                reindexBooks();
+                cout << GREEN << "✅ Book deleted successfully!\n";
+                cout << YELLOW << "📝 IDs have been reindexed.\n" << RESET;
                 saveToMemory();
-                return;
+            } else {
+                cout << RED << "❌ Book not found.\n" << RESET;
             }
         }
+        else if (deleteChoice == 2) {
+            // Delete All
+            if (books.empty()) {
+                cout << YELLOW << "Library is already empty.\n" << RESET;
+                return;
+            }
 
-        cout << RED << "Book not found.\n" << RESET;
+            cout << RED << "⚠️  WARNING: This will delete ALL books!\n";
+            cout << CYAN << "Are you sure? (y/n): " << RESET;
+            char confirm;
+            cin >> confirm;
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+            if (confirm == 'y' || confirm == 'Y') {
+                int bookCount = books.size();
+                books.clear();
+                nextId = 1;
+                cout << GREEN << "✅ Successfully deleted " << bookCount << " books.\n";
+                cout << YELLOW << "📝 Library has been reset.\n" << RESET;
+                saveToMemory();
+            } else {
+                cout << YELLOW << "Delete operation cancelled.\n" << RESET;
+            }
+        }
+        else {
+            cout << RED << "❌ Invalid choice.\n" << RESET;
+        }
     }
 
     void searchBook() {
@@ -363,7 +416,6 @@ public:
                 book.isbn = unescapeJson(bookObj.substr(start, end - start));
             }
 
-            // Parse quantity
             size_t qtyPos = bookObj.find("\"quantity\":");
             if (qtyPos != string::npos) {
                 size_t numStart = bookObj.find_first_of("0123456789", qtyPos);
@@ -378,6 +430,7 @@ public:
         }
 
         if (bookCount > 0) {
+            reindexBooks();
             cout << GREEN << "✅ Loaded " << bookCount << " books from memory!\n" << RESET;
         }
     }
