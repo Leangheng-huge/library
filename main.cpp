@@ -197,7 +197,7 @@ public:
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
         if (deleteChoice == 1) {
-            // Delete by ID
+
             int bookId;
             cout << CYAN << "Enter Book ID to delete: " << RESET;
             cin >> bookId;
@@ -223,7 +223,7 @@ public:
             }
         }
         else if (deleteChoice == 2) {
-            // Delete All
+
             if (books.empty()) {
                 cout << YELLOW << "Library is already empty.\n" << RESET;
                 return;
