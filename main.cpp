@@ -214,7 +214,6 @@ public:
             if (found) {
                 reindexBooks();
                 cout << GREEN << "✅ Book deleted successfully!\n";
-                cout << YELLOW << "📝 IDs have been reindexed.\n" << RESET;
                 cout << YELLOW << "⚠️ Don't forget to save your changes!!\n" << RESET;
             } else {
                 cout << RED << "❌ Book not found.\n" << RESET;
@@ -239,7 +238,7 @@ public:
                 nextId = 1;
                 cout << GREEN << "✅ Successfully deleted " << bookCount << " books.\n";
                 cout << YELLOW << "📝 Library has been reset.\n" << RESET;
-                cout << YELLOW << "💡 Don't forget to save your changes (option 6)!\n" << RESET;
+                cout << YELLOW << "⚠️ Don't forget to save your changes!!\n" << RESET;
             } else {
                 cout << YELLOW << "Delete operation cancelled.\n" << RESET;
             }
@@ -368,19 +367,16 @@ public:
         int arrayStart = content.find("[", booksPos);
         int arrayEnd = content.rfind("]");
 
-        if (arrayStart == -1 || arrayEnd == -1) return;
-
         string booksContent = content.substr(arrayStart + 1, arrayEnd - arrayStart - 1);
 
         int pos = 0;
         int bookCount = 0;
 
-        while (pos < (int)booksContent.length()) {
+        while (true) {
             int objStart = booksContent.find("{", pos);
             if (objStart == -1) break;
 
             int objEnd = booksContent.find("}", objStart);
-            if (objEnd == -1) break;
 
             string bookObj = booksContent.substr(objStart, objEnd - objStart + 1);
 
