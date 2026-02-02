@@ -260,7 +260,7 @@ public:
 
         for (int i = 0; i < books.size(); i++) {
             if (books[i].title.find(title) != string::npos) {
-                cout << GREEN << "ID: " << books[i].id << RESET
+                cout << GREEN << " ➡ ID: " << books[i].id << RESET
                      << PURPLE << ", Title: " << books[i].title << RESET
                      << GREEN << ", Author: " << books[i].author
                      << ", ISBN: " << books[i].isbn
